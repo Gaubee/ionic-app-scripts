@@ -1,4 +1,5 @@
-import * as Uglify from 'uglify-es';
+import * as Uglify from 'uglify-js';
+import type { MinifyOptions } from 'uglify-js';
 
 import { Logger } from './logger/logger';
 import { fillConfigDefaults, generateContext, getUserConfigFile } from './util/config';
@@ -24,7 +25,7 @@ export function uglifyjs(context: BuildContext, configFile?: string) {
 }
 
 export function uglifyjsWorker(context: BuildContext, configFile: string): Promise<any> {
-  const uglifyJsConfig: UglifyJsConfig = fillConfigDefaults(configFile, taskInfo.defaultConfigFile);
+  const uglifyJsConfig: UglifyJsConfig = fillConfigDefaults(configFile, taskInfo.defaultConfigFile) as typeof import("./config/uglifyjs.config");
   if (!context) {
     context = generateContext(context);
   }
@@ -53,7 +54,7 @@ async function runUglifyInternal(sourceFilePath: string, destFilePath: string, s
         content: sourceMapContent
     }
   });
-  const result = Uglify.minify(sourceFileContent, uglifyConfig) as any;
+  const result = Uglify.minify(sourceFileContent, uglifyConfig);
   if (result.error) {
     throw new BuildError(`Uglify failed: ${result.error.message}`);
   }
@@ -69,15 +70,7 @@ export const taskInfo: TaskInfo = {
 };
 
 
-export interface UglifyJsConfig {
-  // https://www.npmjs.com/package/uglify-js
-  sourceFile?: string;
-  destFileName?: string;
-  inSourceMap?: string;
-  outSourceMap?: string;
-  mangle?: boolean;
-  compress?: boolean;
-  comments?: boolean;
+export interface UglifyJsConfig extends MinifyOptions{
 }
 
 export interface UglifyResponse {

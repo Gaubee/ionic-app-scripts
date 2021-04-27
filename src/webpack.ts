@@ -207,7 +207,7 @@ function startWebpackWatch(context: BuildContext, config: WebpackConfig) {
 
 export function getWebpackConfig(context: BuildContext, configFile: string): WebpackConfig {
   configFile = getUserConfigFile(context, taskInfo, configFile);
-  const webpackConfigDictionary = fillConfigDefaults(configFile, taskInfo.defaultConfigFile);
+  const webpackConfigDictionary = fillConfigDefaults(configFile, taskInfo.defaultConfigFile) as typeof import('./config/webpack.config');
   const webpackConfig: WebpackConfig = getWebpackConfigFromDictionary(context, webpackConfigDictionary);
   webpackConfig.entry = replacePathVars(context, webpackConfig.entry);
   webpackConfig.output.path = replacePathVars(context, webpackConfig.output.path);

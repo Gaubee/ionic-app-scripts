@@ -28,7 +28,7 @@ export function copy(context: BuildContext, configFile?: string) {
 }
 
 export function copyWorker(context: BuildContext, configFile: string) {
-  const copyConfig: CopyConfig = fillConfigDefaults(configFile, taskInfo.defaultConfigFile);
+  const copyConfig: CopyConfig = fillConfigDefaults(configFile, taskInfo.defaultConfigFile) as typeof import('./config/copy.config');
   const keys = Object.keys(copyConfig);
   const directoriesToCreate = new Set<string>();
   const toCopyList: CopyToFrom[] = [];
