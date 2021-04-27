@@ -151,7 +151,7 @@ var prodConfig = {
 };
 
 
-module.exports = {
+export = {
   dev: devConfig,
   prod: prodConfig
 }

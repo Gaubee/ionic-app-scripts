@@ -20,7 +20,12 @@ import {
   clearDiagnostics,
   DiagnosticsType,
 } from "./logger/logger-diagnostics";
-import { SassError, render as nodeSassRender, Result } from "node-sass";
+import {
+  SassError,
+  render as nodeSassRender,
+  Options as SassOptions,
+  Result,
+} from "node-sass";
 import postcss from "postcss";
 import * as autoprefixer from "autoprefixer";
 
@@ -106,7 +111,10 @@ export function getSassConfig(
   configFile: string
 ): SassConfig {
   configFile = getUserConfigFile(context, taskInfo, configFile);
-  return fillConfigDefaults(configFile, taskInfo.defaultConfigFile);
+  return fillConfigDefaults(
+    configFile,
+    taskInfo.defaultConfigFile
+  ) as typeof import("./config/sass.config");
 }
 
 function generateSassData(context: BuildContext, sassConfig: SassConfig) {
@@ -522,25 +530,25 @@ const taskInfo: TaskInfo = {
   defaultConfigFile: "sass.config",
 };
 
-export interface SassConfig {
-  // https://www.npmjs.com/package/node-sass
-  outputFilename?: string;
-  outFile?: string;
-  file?: string;
-  data?: string;
-  includePaths?: string[];
-  excludeModules?: string[];
-  includeFiles?: RegExp[];
-  excludeFiles?: RegExp[];
-  directoryMaps?: { [key: string]: string };
-  sortComponentPathsFn?: (a: any, b: any) => number;
-  sortComponentFilesFn?: (a: any, b: any) => number;
+export interface SassConfig extends SassOptions {
   variableSassFiles?: string[];
-  autoprefixer?: any;
-  sourceMap?: string;
-  omitSourceMapUrl?: boolean;
-  sourceMapContents?: boolean;
-  postCssPlugins?: any[];
+  // // https://www.npmjs.com/package/node-sass
+  // outputFilename?: string;
+  // outFile?: string;
+  // file?: string;
+  // data?: string;
+  // includePaths?: string[];
+  // excludeModules?: string[];
+  // includeFiles?: RegExp[];
+  // excludeFiles?: RegExp[];
+  // directoryMaps?: { [key: string]: string };
+  // sortComponentPathsFn?: (a: any, b: any) => number;
+  // sortComponentFilesFn?: (a: any, b: any) => number;
+  // autoprefixer?: any;
+  // sourceMap?: string;
+  // omitSourceMapUrl?: boolean;
+  // sourceMapContents?: boolean;
+  // postCssPlugins?: any[];
 }
 
 export interface SassMap {

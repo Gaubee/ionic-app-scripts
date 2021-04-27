@@ -1,7 +1,7 @@
 
 // https://www.npmjs.com/package/uglify-es
 
-module.exports = {
+export = {
 
   /**
    * mangle: uglify 2's mangle option

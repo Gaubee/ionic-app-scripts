@@ -419,7 +419,7 @@ export function fillConfigDefaults(userConfigFile: string, defaultConfigFile: st
     }
   }
 
-  const defaultConfig = require(join('..', '..', 'config', defaultConfigFile));
+  const defaultConfig = require(join('..', 'config', defaultConfigFile));
 
   // create a fresh copy of the config each time
   // always assign any default values which were not already supplied by the user

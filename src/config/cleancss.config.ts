@@ -1,7 +1,7 @@
 
 // https://www.npmjs.com/package/clean-css
 
-module.exports = {
+export = {
   /**
    * sourceFileName: the file name of the src css file
    */

@@ -1,8 +1,7 @@
-
+//@ts-check
 // https://www.npmjs.com/package/node-sass
 
-module.exports = {
-
+export = {
   /**
    * outputFilename: The filename of the saved CSS file
    * from the sass build. The directory which it is saved in
@@ -18,7 +17,7 @@ module.exports = {
   /**
    * outputStyle: How node-sass should output the css file.
    */
-  outputStyle: 'expanded',
+  outputStyle: "expanded" as const,
 
   /**
    * autoprefixer: The config options for autoprefixer.
@@ -27,13 +26,13 @@ module.exports = {
    */
   autoprefixer: {
     browsers: [
-      'last 2 versions',
-      'iOS >= 8',
-      'Android >= 4.4',
-      'Explorer >= 11',
-      'ExplorerMobile >= 11'
+      "last 2 versions",
+      "iOS >= 8",
+      "Android >= 4.4",
+      "Explorer >= 11",
+      "ExplorerMobile >= 11",
     ],
-    cascade: false
+    cascade: false,
   },
 
   /**
@@ -41,9 +40,9 @@ module.exports = {
    * paths to search for sass imports by just name.
    */
   includePaths: [
-    'node_modules/ionic-angular/themes',
-    'node_modules/ionicons/dist/scss',
-    'node_modules/ionic-angular/fonts'
+    "node_modules/ionic-angular/themes",
+    "node_modules/ionicons/dist/scss",
+    "node_modules/ionic-angular/fonts",
   ],
 
   /**
@@ -52,9 +51,7 @@ module.exports = {
    * If a file matches both include and exclude patterns, then
    * the file will be excluded.
    */
-  includeFiles: [
-    /\.(s(c|a)ss)$/i
-  ],
+  includeFiles: [/\.(s(c|a)ss)$/i],
 
   /**
    * excludeFiles: An array of regex patterns for files which
@@ -70,9 +67,7 @@ module.exports = {
    * only sass variables. These variables are the first sass files
    * to be imported so their values override default variables.
    */
-  variableSassFiles: [
-    '{{SRC}}/theme/variables.scss'
-  ],
+  variableSassFiles: ["{{SRC}}/theme/variables.scss"],
 
   /**
    * directoryMaps: Compiled JS modules may be within a different
@@ -82,7 +77,7 @@ module.exports = {
    * also checks the JavaScript's source directory for sass files.
    */
   directoryMaps: {
-    '{{TMP}}': '{{SRC}}'
+    "{{TMP}}": "{{SRC}}",
   },
 
   /**
@@ -92,12 +87,11 @@ module.exports = {
    * good way to speed up build times by skipping modules.
    */
   excludeModules: [
-    '@angular',
-    'commonjs-proxy',
-    'core-js',
-    'ionic-native',
-    'rxjs',
-    'zone.js'
-  ]
-
+    "@angular",
+    "commonjs-proxy",
+    "core-js",
+    "ionic-native",
+    "rxjs",
+    "zone.js",
+  ],
 };

@@ -7,7 +7,7 @@ var copyConfig = require('./copy.config');
 // then provide an object with the paths, options, and callback fields populated per the Chokidar docs
 // https://www.npmjs.com/package/chokidar
 
-module.exports = {
+export = {
   srcFiles: {
     paths: ['{{SRC}}/**/*.(ts|html|s(c|a)ss)'],
     options: { ignored: ['{{SRC}}/**/*.spec.ts', '{{SRC}}/**/*.e2e.ts', '**/*.DS_Store', '{{SRC}}/index.html'] },
