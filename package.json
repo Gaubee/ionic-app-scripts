@@ -1,5 +1,5 @@
 {
-  "name": "@ionic/app-scripts",
+  "name": "@gaubee/ionic-app-scripts",
   "version": "4.0.0",
   "description": "Scripts for Ionic Projects",
   "homepage": "https://ionicframework.com/",
@@ -17,7 +17,6 @@
     "ionic-app-scripts": "./bin/ionic-app-scripts.js"
   },
   "scripts": {
-    "xx":"conventional-changelog -p angular",
     "up": "yarn upgrade-interactive",
     "upl": "yarn upgrade-interactive --latest",
     "dev": "tsc --watch & npm run sass-watch",
@@ -124,5 +123,8 @@
     },
     "testRegex": "/src/.*\\.spec\\.(ts|js)$",
     "coverageDirectory": "coverage"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
