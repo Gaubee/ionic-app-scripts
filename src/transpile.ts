@@ -94,7 +94,7 @@ export function transpileUpdate(changedFiles: ChangedFile[], context: BuildConte
 export function transpileWorker(context: BuildContext, workerConfig: TranspileWorkerConfig) {
 
   // let's do this
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
 
     clearDiagnostics(context, DiagnosticsType.TypeScript);
 
@@ -255,7 +255,7 @@ function transpileUpdateWorker(event: string, filePath: string, context: BuildCo
 
 
 export function transpileDiagnosticsOnly(context: BuildContext) {
-  return new Promise(resolve => {
+  return new Promise<void>(resolve => {
     workerEvent.once('DiagnosticsWorkerDone', () => {
       resolve();
     });
@@ -270,7 +270,7 @@ let diagnosticsWorker: ChildProcess = null;
 function runDiagnosticsWorker(context: BuildContext) {
   if (!diagnosticsWorker) {
     const workerModule = path.join(__dirname, 'transpile-worker.js');
-    diagnosticsWorker = fork(workerModule, [], { env: { FORCE_COLOR: true } });
+    diagnosticsWorker = fork(workerModule, [], { env: { FORCE_COLOR: 'true' } });
 
     Logger.debug(`diagnosticsWorker created, pid: ${diagnosticsWorker.pid}`);
 

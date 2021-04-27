@@ -7,7 +7,7 @@ import { join } from 'path';
 
 
 export function runWorker(taskModule: string, taskWorker: string, context: BuildContext, workerConfig: any) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const worker = <ChildProcess>createWorker(taskModule);
     const msg: WorkerMessage = {
       taskModule,
@@ -96,7 +96,7 @@ export function createWorker(taskModule: string): any {
     const workerModule = join(__dirname, 'worker-process.js');
     const worker = fork(workerModule, process.argv, {
       env: {
-        FORCE_COLOR: true,
+        FORCE_COLOR: 'true',
         npm_config_argv: process.env.npm_config_argv
       }
     });

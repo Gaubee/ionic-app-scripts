@@ -27,12 +27,12 @@ describe('lint utils', () => {
         output: ''
       };
 
-      spyOn(linter, linter.lint.name).and.returnValue(mockLintResult);
-      spyOn(linter, linter.createProgram.name).and.returnValue({});
-      spyOn(linter, linter.createLinter.name).and.returnValue({});
+      spyOn(linter, 'lint').and.returnValue(mockLintResult);
+      spyOn(linter, 'createProgram').and.returnValue({});
+      spyOn(linter, 'createLinter').and.returnValue({});
 
       // Mock the file read
-      spyOn(helpers, helpers.readFileAsync.name).and.returnValue(Promise.resolve(fileContent));
+      spyOn(helpers, 'readFileAsync').and.returnValue(Promise.resolve(fileContent));
       spyOn(fs, 'openSync').and.returnValue(null);
       spyOn(fs, 'readSync').and.returnValue(null);
       spyOn(fs, 'closeSync').and.returnValue(null);
@@ -67,8 +67,8 @@ describe('lint utils', () => {
         }
       ];
 
-      spyOn(tsLogger, tsLogger.runTypeScriptDiagnostics.name).and.returnValue(null);
-      spyOn(loggerDiagnostics, loggerDiagnostics.printDiagnostics.name).and.returnValue(null);
+      spyOn(tsLogger, 'runTypeScriptDiagnostics').and.returnValue(null);
+      spyOn(loggerDiagnostics, 'printDiagnostics').and.returnValue(null);
 
       try {
         utils.processTypeCheckDiagnostics({}, results);
@@ -109,8 +109,8 @@ describe('lint utils', () => {
         output: ''
       };
 
-      spyOn(tsLintLogger, tsLintLogger.runTsLintDiagnostics.name).and.returnValue(null);
-      spyOn(loggerDiagnostics, loggerDiagnostics.printDiagnostics.name).and.returnValue(null);
+      spyOn(tsLintLogger, 'runTsLintDiagnostics').and.returnValue(null);
+      spyOn(loggerDiagnostics, 'printDiagnostics').and.returnValue(null);
 
       try {
         utils.processLintResult({}, result);

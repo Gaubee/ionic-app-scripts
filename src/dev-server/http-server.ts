@@ -150,7 +150,7 @@ async function getResourcePath(url: string, config: ServeConfig, userAgent: stri
  * Checks if a file exists (responds to stat)
  */
 function checkFile(filePath: string): Promise<void> {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     fs.stat(filePath, (err: Error, stats: any) => {
       if (err) {
         return reject();

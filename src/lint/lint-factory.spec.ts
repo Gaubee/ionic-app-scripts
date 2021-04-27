@@ -34,7 +34,7 @@ describe('lint factory', () => {
     it('should fetch the TSLint configuration from file path', () => {
       const tsConfigFilePath = 'tsconfig.json';
       const mockConfig = {rulesDirectory: ['node_modules/@ionic']};
-      spyOn(Configuration, Configuration.loadConfigurationFromPath.name).and.returnValue(mockConfig);
+      spyOn(Configuration, 'loadConfigurationFromPath').and.returnValue(mockConfig);
 
       const config = getTsLintConfig(tsConfigFilePath);
 
@@ -46,7 +46,7 @@ describe('lint factory', () => {
     it('should extend configuration with {linterOptions} if provided', () => {
       const tsConfigFilePath = 'tsconfig.json';
       const mockConfig = {rulesDirectory: ['node_modules/@ionic']};
-      spyOn(Configuration, Configuration.loadConfigurationFromPath.name).and.returnValue(mockConfig);
+      spyOn(Configuration, 'loadConfigurationFromPath').and.returnValue(mockConfig);
       const config = getTsLintConfig(tsConfigFilePath, {
         typeCheck: true
       });
@@ -85,7 +85,7 @@ describe('lint factory', () => {
       const context: any = {rootDir: ''};
       const program = createProgram(context, '');
 
-      spyOn(ts, ts.getPreEmitDiagnostics.name).and.returnValue([]);
+      spyOn(ts, 'getPreEmitDiagnostics').and.returnValue([]);
 
       typeCheck(context, program, {typeCheck: false})
         .then((result) => {
@@ -108,7 +108,7 @@ describe('lint factory', () => {
         code: 120
       }];
 
-      spyOn(ts, ts.getPreEmitDiagnostics.name).and.returnValue(diagnostics);
+      spyOn(ts, 'getPreEmitDiagnostics').and.returnValue(diagnostics);
 
       typeCheck(context, program, {typeCheck: true})
         .then((result) => {

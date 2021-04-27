@@ -6,7 +6,7 @@ describe('clean task', () => {
   describe('clean', () => {
     it('should empty the build directory', () => {
       // arrage
-      spyOn(fs, fs.emptyDirSync.name).and.returnValue('things');
+      spyOn(fs, 'emptyDirSync').and.returnValue('things');
       const context = { buildDir: 'something' };
 
       // act
@@ -18,7 +18,7 @@ describe('clean task', () => {
 
     it('should throw when failing to empty dir', () => {
       // arrage
-      spyOn(fs, fs.emptyDirSync.name).and.throwError('Simulating an error');
+      spyOn(fs, 'emptyDirSync').and.throwError('Simulating an error');
       const context = { buildDir: 'something' };
 
       // act

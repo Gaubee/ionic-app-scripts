@@ -19,8 +19,8 @@ import * as transpile from './transpile';
 describe('build', () => {
   beforeEach(() => {
     spyOn(clean, 'clean');
-    spyOn(helpers, helpers.readFileAsync.name).and.returnValue(Promise.resolve());
-    spyOn(transpile, transpile.getTsConfigAsync.name).and.callFake(() => {
+    spyOn(helpers, 'readFileAsync').and.returnValue(Promise.resolve());
+    spyOn(transpile, 'getTsConfigAsync').and.callFake(() => {
       return Promise.resolve({
         'options': {
           'sourceMap': true
@@ -28,21 +28,21 @@ describe('build', () => {
       });
     });
 
-    spyOn(buildUtils, buildUtils.scanSrcTsFiles.name).and.returnValue(Promise.resolve());
-    spyOn(buildUtils, buildUtils.validateRequiredFilesExist.name).and.returnValue(Promise.resolve(['fileOneContent', 'fileTwoContent']));
-    spyOn(buildUtils, buildUtils.validateTsConfigSettings.name).and.returnValue(Promise.resolve());
-    spyOn(buildUtils, buildUtils.readVersionOfDependencies.name).and.returnValue(Promise.resolve());
-    spyOn(bundle, bundle.bundle.name).and.returnValue(Promise.resolve());
-    spyOn(copy, copy.copy.name).and.returnValue(Promise.resolve());
-    spyOn(deepLinking, deepLinking.deepLinking.name).and.returnValue(Promise.resolve());
-    spyOn(minify, minify.minifyCss.name).and.returnValue(Promise.resolve());
-    spyOn(minify, minify.minifyJs.name).and.returnValue(Promise.resolve());
-    spyOn(lint, lint.lint.name).and.returnValue(Promise.resolve());
-    spyOn(ngc, ngc.ngc.name).and.returnValue(Promise.resolve());
-    spyOn(postprocess, postprocess.postprocess.name).and.returnValue(Promise.resolve());
-    spyOn(preprocess, preprocess.preprocess.name).and.returnValue(Promise.resolve());
-    spyOn(sass, sass.sass.name).and.returnValue(Promise.resolve());
-    spyOn(transpile, transpile.transpile.name).and.returnValue(Promise.resolve());
+    spyOn(buildUtils, 'scanSrcTsFiles').and.returnValue(Promise.resolve());
+    spyOn(buildUtils, 'validateRequiredFilesExist').and.returnValue(Promise.resolve(['fileOneContent', 'fileTwoContent']));
+    spyOn(buildUtils, 'validateTsConfigSettings').and.returnValue(Promise.resolve());
+    spyOn(buildUtils, 'readVersionOfDependencies').and.returnValue(Promise.resolve());
+    spyOn(bundle, 'bundle').and.returnValue(Promise.resolve());
+    spyOn(copy, 'copy').and.returnValue(Promise.resolve());
+    spyOn(deepLinking, 'deepLinking').and.returnValue(Promise.resolve());
+    spyOn(minify, 'minifyCss').and.returnValue(Promise.resolve());
+    spyOn(minify, 'minifyJs').and.returnValue(Promise.resolve());
+    spyOn(lint, 'lint').and.returnValue(Promise.resolve());
+    spyOn(ngc, 'ngc').and.returnValue(Promise.resolve());
+    spyOn(postprocess, 'postprocess').and.returnValue(Promise.resolve());
+    spyOn(preprocess, 'preprocess').and.returnValue(Promise.resolve());
+    spyOn(sass, 'sass').and.returnValue(Promise.resolve());
+    spyOn(transpile, 'transpile').and.returnValue(Promise.resolve());
   });
 
   it('should do a prod build', () => {
@@ -54,7 +54,7 @@ describe('build', () => {
       runAot: true
     };
 
-    const getBooleanPropertyValueSpy = spyOn(helpers, helpers.getBooleanPropertyValue.name).and.returnValue(true);
+    const getBooleanPropertyValueSpy = spyOn(helpers, 'getBooleanPropertyValue').and.returnValue(true);
 
     return build.build(context).then(() => {
       expect(buildUtils.scanSrcTsFiles).toHaveBeenCalled();
@@ -81,7 +81,7 @@ describe('build', () => {
       runAot: false
     };
 
-    const getBooleanPropertyValueSpy = spyOn(helpers, helpers.getBooleanPropertyValue.name).and.returnValue(true);
+    const getBooleanPropertyValueSpy = spyOn(helpers, 'getBooleanPropertyValue').and.returnValue(true);
 
     return build.build(context).then(() => {
       expect(buildUtils.scanSrcTsFiles).toHaveBeenCalled();
@@ -109,7 +109,7 @@ describe('build', () => {
       runAot: false
     };
 
-    const getBooleanPropertyValueSpy = spyOn(helpers, helpers.getBooleanPropertyValue.name).and.returnValue(false);
+    const getBooleanPropertyValueSpy = spyOn(helpers, 'getBooleanPropertyValue').and.returnValue(false);
 
     return build.build(context).then(() => {
       expect(buildUtils.scanSrcTsFiles).toHaveBeenCalled();
@@ -147,8 +147,8 @@ describe('test project requirements before building', () => {
     process.env[Constants.ENV_TS_CONFIG] = 'tsConfig.js';
     const error = new Error('Config was not found');
 
-    spyOn(helpers, helpers.readFileAsync.name).and.returnValues(Promise.resolve());
-    spyOn(transpile, transpile.getTsConfigAsync.name).and.returnValues(Promise.reject(error));
+    spyOn(helpers, 'readFileAsync').and.returnValues(Promise.resolve());
+    spyOn(transpile, 'getTsConfigAsync').and.returnValues(Promise.reject(error));
 
     return build.build({}).catch((e) => {
       expect(transpile.getTsConfigAsync).toHaveBeenCalledTimes(1);
@@ -160,7 +160,7 @@ describe('test project requirements before building', () => {
   it('should fail fataly if IONIC_TS_CONFIG file does not contain valid JSON', () => {
     process.env[Constants.ENV_APP_ENTRY_POINT] = 'src/app/main.ts';
     process.env[Constants.ENV_TS_CONFIG] = 'tsConfig.js';
-    spyOn(transpile, transpile.getTsConfigAsync.name).and.callFake(() => {
+    spyOn(transpile, 'getTsConfigAsync').and.callFake(() => {
       return Promise.resolve(`{
         "options" {
           "sourceMap": false
@@ -168,8 +168,8 @@ describe('test project requirements before building', () => {
       }
       `);
     });
-    spyOn(buildUtils, buildUtils.scanSrcTsFiles.name).and.returnValue(Promise.resolve());
-    spyOn(buildUtils, buildUtils.readVersionOfDependencies.name).and.returnValue(Promise.resolve());
+    spyOn(buildUtils, 'scanSrcTsFiles').and.returnValue(Promise.resolve());
+    spyOn(buildUtils, 'readVersionOfDependencies').and.returnValue(Promise.resolve());
 
     return build.build({}).catch((e) => {
       expect(transpile.getTsConfigAsync).toHaveBeenCalledTimes(1);
@@ -180,7 +180,7 @@ describe('test project requirements before building', () => {
   it('should fail fataly if IONIC_TS_CONFIG file does not contain compilerOptions.sourceMap === true', () => {
     process.env[Constants.ENV_APP_ENTRY_POINT] = 'src/app/main.ts';
     process.env[Constants.ENV_TS_CONFIG] = 'tsConfig.js';
-    spyOn(transpile, transpile.getTsConfigAsync.name).and.callFake(() => {
+    spyOn(transpile, 'getTsConfigAsync').and.callFake(() => {
       return Promise.resolve(`{
         "options": {
           "sourceMap": false
@@ -188,8 +188,8 @@ describe('test project requirements before building', () => {
       }
       `);
     });
-    spyOn(buildUtils, buildUtils.scanSrcTsFiles.name).and.returnValue(Promise.resolve());
-    spyOn(buildUtils, buildUtils.readVersionOfDependencies.name).and.returnValue(Promise.resolve());
+    spyOn(buildUtils, 'scanSrcTsFiles').and.returnValue(Promise.resolve());
+    spyOn(buildUtils, 'readVersionOfDependencies').and.returnValue(Promise.resolve());
 
     return build.build({}).catch((e) => {
       expect(transpile.getTsConfigAsync).toHaveBeenCalledTimes(1);

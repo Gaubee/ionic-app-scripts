@@ -19,9 +19,9 @@ describe('Deep Linking task', () => {
       const knownDeepLinkString = 'someDeepLinkString';
       context.fileCache.set(appNgModulePath, { path: appNgModulePath, content: knownFileContent});
 
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(appNgModulePath);
-      spyOn(helpers, helpers.readAndCacheFile.name).and.returnValue(Promise.resolve(knownFileContent));
-      spyOn(deeplinkUtils, deeplinkUtils.hasExistingDeepLinkConfig.name).and.returnValue(true);
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(appNgModulePath);
+      spyOn(helpers, 'readAndCacheFile').and.returnValue(Promise.resolve(knownFileContent));
+      spyOn(deeplinkUtils, 'hasExistingDeepLinkConfig').and.returnValue(true);
 
       const promise = deepLinking.deepLinkingWorkerImpl(context, null);
 

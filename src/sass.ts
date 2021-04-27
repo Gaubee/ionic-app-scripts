@@ -1,52 +1,62 @@
-import { basename, dirname, join, sep } from 'path';
-import { BuildContext, BuildState, ChangedFile, TaskInfo } from './util/interfaces';
-import { BuildError } from './util/errors';
-import { bundle } from './bundle';
-import { ensureDirSync, readdirSync, writeFile } from 'fs-extra';
-import { fillConfigDefaults, getUserConfigFile, replacePathVars } from './util/config';
-import { Logger } from './logger/logger';
-import { runSassDiagnostics } from './logger/logger-sass';
-import { printDiagnostics, clearDiagnostics, DiagnosticsType } from './logger/logger-diagnostics';
-import { SassError, render as nodeSassRender, Result } from 'node-sass';
-import * as postcss from 'postcss';
-import * as autoprefixer from 'autoprefixer';
-
+import { basename, dirname, join, sep } from "path";
+import {
+  BuildContext,
+  BuildState,
+  ChangedFile,
+  TaskInfo,
+} from "./util/interfaces";
+import { BuildError } from "./util/errors";
+import { bundle } from "./bundle";
+import { ensureDirSync, readdirSync, writeFile } from "fs-extra";
+import {
+  fillConfigDefaults,
+  getUserConfigFile,
+  replacePathVars,
+} from "./util/config";
+import { Logger } from "./logger/logger";
+import { runSassDiagnostics } from "./logger/logger-sass";
+import {
+  printDiagnostics,
+  clearDiagnostics,
+  DiagnosticsType,
+} from "./logger/logger-diagnostics";
+import { SassError, render as nodeSassRender, Result } from "node-sass";
+import postcss from "postcss";
+import * as autoprefixer from "autoprefixer";
 
 export function sass(context: BuildContext, configFile?: string) {
   configFile = getUserConfigFile(context, taskInfo, configFile);
 
-  const logger = new Logger('sass');
+  const logger = new Logger("sass");
 
   return sassWorker(context, configFile)
-    .then(outFile => {
+    .then((outFile) => {
       context.sassState = BuildState.SuccessfulBuild;
       logger.finish();
       return outFile;
     })
-    .catch(err => {
+    .catch((err) => {
       context.sassState = BuildState.RequiresBuild;
       throw logger.fail(err);
     });
 }
-
 
 export function sassUpdate(changedFiles: ChangedFile[], context: BuildContext) {
   const configFile = getUserConfigFile(context, taskInfo, null);
 
-  const logger = new Logger('sass update');
+  const logger = new Logger("sass update");
 
   return sassWorker(context, configFile)
-    .then(outFile => {
+    .then((outFile) => {
       context.sassState = BuildState.SuccessfulBuild;
       logger.finish();
       return outFile;
     })
-    .catch(err => {
+    .catch((err) => {
       context.sassState = BuildState.RequiresBuild;
       throw logger.fail(err);
     });
 }
-
 
 export function sassWorker(context: BuildContext, configFile: string) {
   const sassConfig: SassConfig = getSassConfig(context, configFile);
@@ -72,8 +82,10 @@ export function sassWorker(context: BuildContext, configFile: string) {
     Logger.debug(`sass includePaths: ${sassConfig.includePaths}`);
 
     // sass import sorting algorithms incase there was something to tweak
-    sassConfig.sortComponentPathsFn = (sassConfig.sortComponentPathsFn || defaultSortComponentPathsFn);
-    sassConfig.sortComponentFilesFn = (sassConfig.sortComponentFilesFn || defaultSortComponentFilesFn);
+    sassConfig.sortComponentPathsFn =
+      sassConfig.sortComponentPathsFn || defaultSortComponentPathsFn;
+    sassConfig.sortComponentFilesFn =
+      sassConfig.sortComponentFilesFn || defaultSortComponentFilesFn;
 
     if (!sassConfig.file) {
       // if the sass config was not given an input file, then
@@ -89,7 +101,10 @@ export function sassWorker(context: BuildContext, configFile: string) {
   });
 }
 
-export function getSassConfig(context: BuildContext, configFile: string): SassConfig {
+export function getSassConfig(
+  context: BuildContext,
+  configFile: string
+): SassConfig {
   configFile = getUserConfigFile(context, taskInfo, configFile);
   return fillConfigDefaults(configFile, taskInfo.defaultConfigFile);
 }
@@ -109,7 +124,7 @@ function generateSassData(context: BuildContext, sassConfig: SassConfig) {
 
   const moduleDirectories: string[] = [];
   if (context.moduleFiles) {
-    context.moduleFiles.forEach(moduleFile => {
+    context.moduleFiles.forEach((moduleFile) => {
       const moduleDirectory = dirname(moduleFile);
       if (moduleDirectories.indexOf(moduleDirectory) < 0) {
         moduleDirectories.push(moduleDirectory);
@@ -121,51 +136,79 @@ function generateSassData(context: BuildContext, sassConfig: SassConfig) {
 
   // gather a list of all the sass variable files that should be used
   // these variable files will be the first imports
-  const userSassVariableFiles = sassConfig.variableSassFiles.map(f => {
+  const userSassVariableFiles = sassConfig.variableSassFiles.map((f) => {
     return replacePathVars(context, f);
   });
 
   // gather a list of all the sass files that are next to components we're bundling
-  const componentSassFiles = getComponentSassFiles(moduleDirectories, context, sassConfig);
+  const componentSassFiles = getComponentSassFiles(
+    moduleDirectories,
+    context,
+    sassConfig
+  );
 
   Logger.debug(`sass userSassVariableFiles: ${userSassVariableFiles.length}`);
   Logger.debug(`sass componentSassFiles: ${componentSassFiles.length}`);
 
-  const sassImports = userSassVariableFiles.concat(componentSassFiles).map(sassFile => '"' + sassFile.replace(/\\/g, '\\\\') + '"');
+  const sassImports = userSassVariableFiles
+    .concat(componentSassFiles)
+    .map((sassFile) => '"' + sassFile.replace(/\\/g, "\\\\") + '"');
 
   if (sassImports.length) {
-    sassConfig.data = `@charset "UTF-8"; @import ${sassImports.join(',')};`;
+    sassConfig.data = `@charset "UTF-8"; @import ${sassImports.join(",")};`;
   }
 }
 
-
-function getComponentSassFiles(moduleDirectories: string[], context: BuildContext, sassConfig: SassConfig) {
+function getComponentSassFiles(
+  moduleDirectories: string[],
+  context: BuildContext,
+  sassConfig: SassConfig
+) {
   const collectedSassFiles: string[] = [];
-  const componentDirectories = getComponentDirectories(moduleDirectories, sassConfig);
+  const componentDirectories = getComponentDirectories(
+    moduleDirectories,
+    sassConfig
+  );
 
   // sort all components with the library components being first
   // and user components coming last, so it's easier for user css
   // to override library css with the same specificity
-  const sortedComponentPaths = componentDirectories.sort(sassConfig.sortComponentPathsFn);
+  const sortedComponentPaths = componentDirectories.sort(
+    sassConfig.sortComponentPathsFn
+  );
 
-  sortedComponentPaths.forEach(componentPath => {
-    addComponentSassFiles(componentPath, collectedSassFiles, context, sassConfig);
+  sortedComponentPaths.forEach((componentPath) => {
+    addComponentSassFiles(
+      componentPath,
+      collectedSassFiles,
+      context,
+      sassConfig
+    );
   });
 
   return collectedSassFiles;
 }
 
-
-function addComponentSassFiles(componentPath: string, collectedSassFiles: string[], context: BuildContext, sassConfig: SassConfig) {
+function addComponentSassFiles(
+  componentPath: string,
+  collectedSassFiles: string[],
+  context: BuildContext,
+  sassConfig: SassConfig
+) {
   let siblingFiles = getSiblingSassFiles(componentPath, sassConfig);
 
-  if (!siblingFiles.length && componentPath.indexOf(sep + 'node_modules') === -1) {
-
+  if (
+    !siblingFiles.length &&
+    componentPath.indexOf(sep + "node_modules") === -1
+  ) {
     // if we didn't find anything, see if this module is mapped to another directory
     for (const k in sassConfig.directoryMaps) {
       if (sassConfig.directoryMaps.hasOwnProperty(k)) {
         var actualDirectory = replacePathVars(context, k);
-        var mappedDirectory = replacePathVars(context, sassConfig.directoryMaps[k]);
+        var mappedDirectory = replacePathVars(
+          context,
+          sassConfig.directoryMaps[k]
+        );
 
         componentPath = componentPath.replace(actualDirectory, mappedDirectory);
 
@@ -180,26 +223,26 @@ function addComponentSassFiles(componentPath: string, collectedSassFiles: string
   if (siblingFiles.length) {
     siblingFiles = siblingFiles.sort(sassConfig.sortComponentFilesFn);
 
-    siblingFiles.forEach(componentFile => {
+    siblingFiles.forEach((componentFile) => {
       collectedSassFiles.push(componentFile);
     });
   }
 }
 
-
 function getSiblingSassFiles(componentPath: string, sassConfig: SassConfig) {
   try {
-    return readdirSync(componentPath).filter(f => {
-      return isValidSassFile(f, sassConfig);
-    }).map(f => {
-      return join(componentPath, f);
-    });
+    return readdirSync(componentPath)
+      .filter((f) => {
+        return isValidSassFile(f, sassConfig);
+      })
+      .map((f) => {
+        return join(componentPath, f);
+      });
   } catch (ex) {
     // it's an invalid path
     return [];
   }
 }
-
 
 function isValidSassFile(filename: string, sassConfig: SassConfig) {
   for (var i = 0; i < sassConfig.includeFiles.length; i++) {
@@ -218,16 +261,22 @@ function isValidSassFile(filename: string, sassConfig: SassConfig) {
   return false;
 }
 
-
-function getComponentDirectories(moduleDirectories: string[], sassConfig: SassConfig) {
+function getComponentDirectories(
+  moduleDirectories: string[],
+  sassConfig: SassConfig
+) {
   // filter out module directories we know wouldn't have sibling component sass file
   // just a way to reduce the amount of lookups to be done later
-  return moduleDirectories.filter(moduleDirectory => {
+  return moduleDirectories.filter((moduleDirectory) => {
     // normalize this directory is using / between directories
-    moduleDirectory = moduleDirectory.replace(/\\/g, '/');
+    moduleDirectory = moduleDirectory.replace(/\\/g, "/");
 
     for (var i = 0; i < sassConfig.excludeModules.length; i++) {
-      if (moduleDirectory.indexOf('/node_modules/' + sassConfig.excludeModules[i] + '/') > -1) {
+      if (
+        moduleDirectory.indexOf(
+          "/node_modules/" + sassConfig.excludeModules[i] + "/"
+        ) > -1
+      ) {
         return false;
       }
     }
@@ -235,10 +284,11 @@ function getComponentDirectories(moduleDirectories: string[], sassConfig: SassCo
   });
 }
 
-
-function render(context: BuildContext, sassConfig: SassConfig): Promise<string> {
+function render(
+  context: BuildContext,
+  sassConfig: SassConfig
+): Promise<string> {
   return new Promise((resolve, reject) => {
-
     sassConfig.omitSourceMapUrl = false;
 
     if (sassConfig.sourceMap) {
@@ -249,25 +299,34 @@ function render(context: BuildContext, sassConfig: SassConfig): Promise<string> 
       const diagnostics = runSassDiagnostics(context, sassError);
 
       if (diagnostics.length) {
-        printDiagnostics(context, DiagnosticsType.Sass, diagnostics, true, true);
+        printDiagnostics(
+          context,
+          DiagnosticsType.Sass,
+          diagnostics,
+          true,
+          true
+        );
         // sass render error :(
-        reject(new BuildError('Failed to render sass to css'));
-
+        reject(new BuildError("Failed to render sass to css"));
       } else {
         // sass render success :)
-        renderSassSuccess(context, sassResult, sassConfig).then(outFile => {
-          resolve(outFile);
-
-        }).catch(err => {
-          reject(new BuildError(err));
-        });
+        renderSassSuccess(context, sassResult, sassConfig)
+          .then((outFile) => {
+            resolve(outFile);
+          })
+          .catch((err) => {
+            reject(new BuildError(err));
+          });
       }
     });
   });
 }
 
-
-function renderSassSuccess(context: BuildContext, sassResult: Result, sassConfig: SassConfig): Promise<string> {
+function renderSassSuccess(
+  context: BuildContext,
+  sassResult: Result,
+  sassConfig: SassConfig
+): Promise<string> {
   if (sassConfig.autoprefixer) {
     // with autoprefixer
 
@@ -275,14 +334,14 @@ function renderSassSuccess(context: BuildContext, sassResult: Result, sassConfig
     if (sassConfig.sourceMap) {
       autoPrefixerMapOptions = {
         inline: false,
-        prev: generateSourceMaps(sassResult, sassConfig)
+        prev: generateSourceMaps(sassResult, sassConfig),
       };
     }
 
     const postcssOptions: any = {
       to: basename(sassConfig.outFile),
       map: autoPrefixerMapOptions,
-      from: void 0
+      from: void 0,
     };
 
     Logger.debug(`sass, start postcss/autoprefixer`);
@@ -290,14 +349,12 @@ function renderSassSuccess(context: BuildContext, sassResult: Result, sassConfig
     let postCssPlugins = [autoprefixer(sassConfig.autoprefixer)];
 
     if (sassConfig.postCssPlugins) {
-      postCssPlugins = [
-        ...sassConfig.postCssPlugins,
-        ...postCssPlugins
-      ];
+      postCssPlugins = [...sassConfig.postCssPlugins, ...postCssPlugins];
     }
 
     return postcss(postCssPlugins)
-      .process(sassResult.css, postcssOptions).then((postCssResult: any) => {
+      .process(sassResult.css, postcssOptions)
+      .then((postCssResult: any) => {
         postCssResult.warnings().forEach((warn: any) => {
           Logger.warn(warn.toString());
         });
@@ -316,11 +373,18 @@ function renderSassSuccess(context: BuildContext, sassResult: Result, sassConfig
   // without autoprefixer
   let sassMapResult: SassMap = generateSourceMaps(sassResult, sassConfig);
 
-  return writeOutput(context, sassConfig, sassResult.css.toString(), sassMapResult);
+  return writeOutput(
+    context,
+    sassConfig,
+    sassResult.css.toString(),
+    sassMapResult
+  );
 }
 
-
-function generateSourceMaps(sassResult: Result, sassConfig: SassConfig): SassMap {
+function generateSourceMaps(
+  sassResult: Result,
+  sassConfig: SassConfig
+): SassMap {
   // this can be async and nothing needs to wait on it
 
   // build Source Maps!
@@ -331,7 +395,7 @@ function generateSourceMaps(sassResult: Result, sassConfig: SassConfig): SassMap
     const sassMap: SassMap = JSON.parse(sassResult.map.toString());
 
     // grab the stdout and transform it into stdin
-    const sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
+    const sassMapFile = sassMap.file.replace(/^stdout$/, "stdin");
 
     // grab the base file name that's being worked on
     const sassFileSrc = sassConfig.outFile;
@@ -342,13 +406,15 @@ function generateSourceMaps(sassResult: Result, sassConfig: SassConfig): SassMap
       // prepend the path to all files in the sources array except the file that's being worked on
       const sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
       sassMap.sources = sassMap.sources.map((source, index) => {
-        return (index === sourceFileIndex) ? source : join(sassFileSrcPath, source);
+        return index === sourceFileIndex
+          ? source
+          : join(sassFileSrcPath, source);
       });
     }
 
     // remove 'stdin' from souces and replace with filenames!
-    sassMap.sources = sassMap.sources.filter(src => {
-      if (src !== 'stdin') {
+    sassMap.sources = sassMap.sources.filter((src) => {
+      if (src !== "stdin") {
         return src;
       }
     });
@@ -356,11 +422,14 @@ function generateSourceMaps(sassResult: Result, sassConfig: SassConfig): SassMap
   }
 }
 
-
-function writeOutput(context: BuildContext, sassConfig: SassConfig, cssOutput: string, sourceMap: SassMap): Promise<string> {
+function writeOutput(
+  context: BuildContext,
+  sassConfig: SassConfig,
+  cssOutput: string,
+  sourceMap: SassMap
+): Promise<string> {
   let mappingsOutput: string = JSON.stringify(sourceMap);
   return new Promise((resolve, reject) => {
-
     Logger.debug(`sass start write output: ${sassConfig.outFile}`);
 
     const buildDir = dirname(sassConfig.outFile);
@@ -368,22 +437,29 @@ function writeOutput(context: BuildContext, sassConfig: SassConfig, cssOutput: s
 
     writeFile(sassConfig.outFile, cssOutput, (cssWriteErr: any) => {
       if (cssWriteErr) {
-        reject(new BuildError(`Error writing css file, ${sassConfig.outFile}: ${cssWriteErr}`));
-
+        reject(
+          new BuildError(
+            `Error writing css file, ${sassConfig.outFile}: ${cssWriteErr}`
+          )
+        );
       } else {
         Logger.debug(`sass saved output: ${sassConfig.outFile}`);
 
         if (mappingsOutput) {
           // save the css map file too
           // this save completes async and does not hold up the resolve
-          const sourceMapPath = join(buildDir, basename(sassConfig.outFile) + '.map');
+          const sourceMapPath = join(
+            buildDir,
+            basename(sassConfig.outFile) + ".map"
+          );
 
           Logger.debug(`sass start write css map: ${sourceMapPath}`);
 
           writeFile(sourceMapPath, mappingsOutput, (mapWriteErr: any) => {
             if (mapWriteErr) {
-              Logger.error(`Error writing css map file, ${sourceMapPath}: ${mapWriteErr}`);
-
+              Logger.error(
+                `Error writing css map file, ${sourceMapPath}: ${mapWriteErr}`
+              );
             } else {
               Logger.debug(`sass saved css map: ${sourceMapPath}`);
             }
@@ -398,13 +474,12 @@ function writeOutput(context: BuildContext, sassConfig: SassConfig, cssOutput: s
   });
 }
 
-
 function defaultSortComponentPathsFn(a: any, b: any): number {
-  const aIndexOfNodeModules = a.indexOf('node_modules');
-  const bIndexOfNodeModules = b.indexOf('node_modules');
+  const aIndexOfNodeModules = a.indexOf("node_modules");
+  const bIndexOfNodeModules = b.indexOf("node_modules");
 
   if (aIndexOfNodeModules > -1 && bIndexOfNodeModules > -1) {
-    return (a > b) ? 1 : -1;
+    return a > b ? 1 : -1;
   }
 
   if (aIndexOfNodeModules > -1 && bIndexOfNodeModules === -1) {
@@ -415,15 +490,14 @@ function defaultSortComponentPathsFn(a: any, b: any): number {
     return 1;
   }
 
-  return (a > b) ? 1 : -1;
+  return a > b ? 1 : -1;
 }
 
-
 function defaultSortComponentFilesFn(a: any, b: any): number {
-  const aPeriods = a.split('.').length;
-  const bPeriods = b.split('.').length;
-  const aDashes = a.split('-').length;
-  const bDashes = b.split('-').length;
+  const aPeriods = a.split(".").length;
+  const bPeriods = b.split(".").length;
+  const aDashes = a.split("-").length;
+  const bDashes = b.split("-").length;
 
   if (aPeriods > bPeriods) {
     return 1;
@@ -437,18 +511,16 @@ function defaultSortComponentFilesFn(a: any, b: any): number {
     return -1;
   }
 
-  return (a > b) ? 1 : -1;
+  return a > b ? 1 : -1;
 }
 
-
 const taskInfo: TaskInfo = {
-  fullArg: '--sass',
-  shortArg: '-s',
-  envVar: 'IONIC_SASS',
-  packageConfig: 'ionic_sass',
-  defaultConfigFile: 'sass.config'
+  fullArg: "--sass",
+  shortArg: "-s",
+  envVar: "IONIC_SASS",
+  packageConfig: "ionic_sass",
+  defaultConfigFile: "sass.config",
 };
-
 
 export interface SassConfig {
   // https://www.npmjs.com/package/node-sass
@@ -470,7 +542,6 @@ export interface SassConfig {
   sourceMapContents?: boolean;
   postCssPlugins?: any[];
 }
-
 
 export interface SassMap {
   version: number;

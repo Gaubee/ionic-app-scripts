@@ -113,7 +113,7 @@ export function titleCase(str: string) {
 
 
 export function writeFileAsync(filePath: string, content: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     writeFile(filePath, content, (err) => {
       if (err) {
         return reject(err);
@@ -135,7 +135,7 @@ export function readFileAsync(filePath: string) {
 }
 
 export function readJsonAsync(filePath: string): Promise<any> {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     readJson(filePath, {}, (err, object) => {
       if (err) {
         return reject(err);
@@ -210,7 +210,7 @@ export function copyFileAsync(srcPath: string, destPath: string) {
 }
 
 export function mkDirpAsync(directoryPath: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     ensureDir(directoryPath, (err: Error) => {
       if (err) {
         return reject(err);

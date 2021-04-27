@@ -7,9 +7,9 @@ describe('Remove Fonts', () => {
   describe('removeUnusedFonts', () => {
     it('should not purge any fonts when target is not cordova', () => {
       const fakeFontDirPath = join(process.cwd(), 'www', 'assets', 'fonts');
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(fakeFontDirPath);
-      spyOn(helpers, helpers.readDirAsync.name).and.returnValue(Promise.resolve(getMockFontDirData()));
-      spyOn(helpers, helpers.unlinkAsync.name).and.returnValue(Promise.resolve());
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(fakeFontDirPath);
+      spyOn(helpers, 'readDirAsync').and.returnValue(Promise.resolve(getMockFontDirData()));
+      spyOn(helpers, 'unlinkAsync').and.returnValue(Promise.resolve());
 
       return removeUnusedFonts({ target: 'notCordova', platform: 'web' }).then(() => {
         expect(helpers.getStringPropertyValue).toHaveBeenCalled();
@@ -20,9 +20,9 @@ describe('Remove Fonts', () => {
 
     it('should purge all non-woffs for ionicons and roboto, and then all of noto-sans for ios', () => {
       const fakeFontDirPath = join(process.cwd(), 'www', 'assets', 'fonts');
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(fakeFontDirPath);
-      spyOn(helpers, helpers.readDirAsync.name).and.returnValue(Promise.resolve(getMockFontDirData()));
-      const unlinkSpy = spyOn(helpers, helpers.unlinkAsync.name).and.returnValue(Promise.resolve());
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(fakeFontDirPath);
+      spyOn(helpers, 'readDirAsync').and.returnValue(Promise.resolve(getMockFontDirData()));
+      const unlinkSpy = spyOn(helpers, 'unlinkAsync').and.returnValue(Promise.resolve());
 
       return removeUnusedFonts({ target: 'cordova', platform: 'ios' }).then(() => {
         expect(helpers.readDirAsync).toHaveBeenCalledWith(fakeFontDirPath);
@@ -46,9 +46,9 @@ describe('Remove Fonts', () => {
 
     it('should purge all non-woffs for ionicons, all of roboto and noto-sans for android', () => {
       const fakeFontDirPath = join(process.cwd(), 'www', 'assets', 'fonts');
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(fakeFontDirPath);
-      spyOn(helpers, helpers.readDirAsync.name).and.returnValue(Promise.resolve(getMockFontDirData()));
-      const unlinkSpy = spyOn(helpers, helpers.unlinkAsync.name).and.returnValue(Promise.resolve());
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(fakeFontDirPath);
+      spyOn(helpers, 'readDirAsync').and.returnValue(Promise.resolve(getMockFontDirData()));
+      const unlinkSpy = spyOn(helpers, 'unlinkAsync').and.returnValue(Promise.resolve());
 
       return removeUnusedFonts({ target: 'cordova', platform: 'android' }).then(() => {
         expect(helpers.readDirAsync).toHaveBeenCalledWith(fakeFontDirPath);
@@ -81,9 +81,9 @@ describe('Remove Fonts', () => {
 
     it('should purge all non-woffs for ionicons, all of roboto and noto-sans for windows', () => {
       const fakeFontDirPath = join(process.cwd(), 'www', 'assets', 'fonts');
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(fakeFontDirPath);
-      spyOn(helpers, helpers.readDirAsync.name).and.returnValue(Promise.resolve(getMockFontDirData()));
-      const unlinkSpy = spyOn(helpers, helpers.unlinkAsync.name).and.returnValue(Promise.resolve());
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(fakeFontDirPath);
+      spyOn(helpers, 'readDirAsync').and.returnValue(Promise.resolve(getMockFontDirData()));
+      const unlinkSpy = spyOn(helpers, 'unlinkAsync').and.returnValue(Promise.resolve());
 
       return removeUnusedFonts({ target: 'cordova', platform: 'windows' }).then(() => {
         expect(helpers.readDirAsync).toHaveBeenCalledWith(fakeFontDirPath);

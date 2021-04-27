@@ -19,7 +19,7 @@ export function findClosestOpenPort(host: string, port: number): Promise<number>
 }
 
 export function isPortTaken(host: string, port: number): Promise<boolean> {
-  return new Promise((resolve, reject) => {
+  return new Promise<boolean>((resolve, reject) => {
     const tester = net.createServer()
     .once('error', (err: any) => {
       if (err.code !== 'EADDRINUSE') {

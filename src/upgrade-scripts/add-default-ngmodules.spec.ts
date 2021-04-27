@@ -25,7 +25,7 @@ describe('add default ngmodules upgrade script', () => {
                             { absolutePath: knownFileThree},
                             { absolutePath: knownFileFour},
                           ];
-      spyOn(globUtil, globUtil.globAll.name).and.returnValue(Promise.resolve(globResults));
+      spyOn(globUtil, 'globAll').and.returnValue(Promise.resolve(globResults));
       const promise = upgradeScript.getTsFilePaths(context);
 
       return promise.then((filePaths: string[]) => {
@@ -51,7 +51,7 @@ describe('add default ngmodules upgrade script', () => {
 
       const fileList = [knownFileOne, knownFileTwo, knownFileThree, knownFileFour];
 
-      spyOn(helpers, helpers.readFileAsync.name).and.callFake((filePath: string) => {
+      spyOn(helpers, 'readFileAsync').and.callFake((filePath: string) => {
         // just set the file content to the path name + 'content' to keep things simple
         return Promise.resolve(filePath + 'content');
       });
@@ -151,7 +151,7 @@ export class ModalOneModule {}
 
 `;
 
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(ngModuleFileExtension);
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(ngModuleFileExtension);
       const fsSpy = spyOn(fs, 'writeFileSync');
 
       upgradeScript.generateAndWriteNgModules(context.fileCache);

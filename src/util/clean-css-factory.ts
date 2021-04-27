@@ -1,6 +1,6 @@
 import * as cleanCss from 'clean-css';
 
-export function getCleanCssInstance(options: cleanCss.Options) {
+export function getCleanCssInstance(options: cleanCss.OptionsOutput) {
   return new cleanCss(options);
 }
 
@@ -10,5 +10,5 @@ export interface CleanCssConfig {
   // sourceSourceMapName: string;
   destFileName: string;
   // options: cleanCss Options;
-  options?: cleanCss.Options;
+  options?: cleanCss.OptionsOutput;
 }

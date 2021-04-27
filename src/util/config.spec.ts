@@ -204,7 +204,7 @@ describe('config', () => {
       const fakeConfig: any = { };
       config.setProcessEnv(fakeConfig);
 
-      spyOn(helpers, helpers.getBooleanPropertyValue.name).and.returnValue(true);
+      spyOn(helpers, 'getBooleanPropertyValue').and.returnValue(true);
 
       config.generateContext({
         isProd: true

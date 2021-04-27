@@ -16,7 +16,7 @@ describe('lint task', () => {
     });
 
     it('should return a resolved promise', (done: Function) => {
-      spyOn(workerClient, workerClient.runWorker.name).and.returnValue(Promise.resolve());
+      spyOn(workerClient, 'runWorker').and.returnValue(Promise.resolve());
 
       lint(null).then(() => {
         done();
@@ -24,7 +24,7 @@ describe('lint task', () => {
     });
 
     it('should return resolved promise when bailOnLintError is not set', (done: Function) => {
-      spyOn(workerClient, workerClient.runWorker.name).and.returnValue(Promise.reject(new Error('Simulating an error')));
+      spyOn(workerClient, 'runWorker').and.returnValue(Promise.reject(new Error('Simulating an error')));
 
       lint(null).then(() => {
         done();
@@ -32,7 +32,7 @@ describe('lint task', () => {
     });
 
     it('should return rejected promise when bailOnLintError is set', (done: Function) => {
-      spyOn(workerClient, workerClient.runWorker.name).and.returnValue(Promise.reject(new Error('Simulating an error')));
+      spyOn(workerClient, 'runWorker').and.returnValue(Promise.reject(new Error('Simulating an error')));
       process.env[Constants.ENV_BAIL_ON_LINT_ERROR] = 'true';
 
       lint(null).catch(() => {

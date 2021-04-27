@@ -33,9 +33,9 @@ describe('copy task', () => {
       let combinedSource: string[] = [];
       Object.keys(sampleConfig).forEach(entry => combinedSource = combinedSource.concat(sampleConfig[entry].src));
 
-      spyOn(config, config.generateContext.name).and.returnValue(context);
-      spyOn(config, config.getUserConfigFile.name).and.returnValue(configFile);
-      spyOn(config, config.fillConfigDefaults.name).and.returnValue(sampleConfig);
+      spyOn(config, 'generateContext').and.returnValue(context);
+      spyOn(config, 'getUserConfigFile').and.returnValue(configFile);
+      spyOn(config, 'fillConfigDefaults').and.returnValue(sampleConfig);
 
       // act
       const result = copy.copyConfigToWatchConfig(null);

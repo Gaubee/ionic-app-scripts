@@ -5,7 +5,7 @@ import { Logger } from './logger/logger';
 
 
 export function clean(context: BuildContext) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const logger = new Logger('clean');
 
     try {

@@ -1,33 +1,37 @@
-import { BuildContext, Diagnostic, PrintLine } from '../util/interfaces';
-import { Logger } from './logger';
-import { highlight } from '../highlight/highlight';
-import { splitLineBreaks } from '../util/helpers';
-import * as ts from 'typescript';
-
+import { BuildContext, Diagnostic, PrintLine } from "../util/interfaces";
+import { Logger } from "./logger";
+import { highlight } from "../highlight/highlight";
+import { splitLineBreaks } from "../util/helpers";
+import * as ts from "typescript";
 
 /**
  * Ok, so formatting overkill, we know. But whatever, it makes for great
  * error reporting within a terminal. So, yeah, let's code it up, shall we?
  */
 
-export function runTypeScriptDiagnostics(context: BuildContext, tsDiagnostics: ts.Diagnostic[]) {
-  return tsDiagnostics.map(tsDiagnostic => {
+export function runTypeScriptDiagnostics(
+  context: BuildContext,
+  tsDiagnostics: readonly ts.Diagnostic[]
+) {
+  return tsDiagnostics.map((tsDiagnostic) => {
     return loadDiagnostic(context, tsDiagnostic);
   });
 }
 
-
 function loadDiagnostic(context: BuildContext, tsDiagnostic: ts.Diagnostic) {
   const d: Diagnostic = {
-    level: 'error',
-    type: 'typescript',
-    language: 'typescript',
-    header: 'typescript error',
+    level: "error",
+    type: "typescript",
+    language: "typescript",
+    header: "typescript error",
     code: tsDiagnostic.code.toString(),
-    messageText: ts.flattenDiagnosticMessageText(tsDiagnostic.messageText, '\n'),
+    messageText: ts.flattenDiagnosticMessageText(
+      tsDiagnostic.messageText,
+      "\n"
+    ),
     relFileName: null,
     absFileName: null,
-    lines: []
+    lines: [],
   };
 
   if (tsDiagnostic.file && tsDiagnostic.file.getText) {
@@ -39,10 +43,14 @@ function loadDiagnostic(context: BuildContext, tsDiagnostic: ts.Diagnostic) {
     let htmlLines = srcLines;
 
     try {
-      htmlLines = splitLineBreaks(highlight(d.language, sourceText, true).value);
+      htmlLines = splitLineBreaks(
+        highlight(d.language, sourceText, true).value
+      );
     } catch (e) {}
 
-    const posData = tsDiagnostic.file.getLineAndCharacterOfPosition(tsDiagnostic.start);
+    const posData = tsDiagnostic.file.getLineAndCharacterOfPosition(
+      tsDiagnostic.start
+    );
 
     const errorLine: PrintLine = {
       lineIndex: posData.line,
@@ -50,7 +58,7 @@ function loadDiagnostic(context: BuildContext, tsDiagnostic: ts.Diagnostic) {
       text: srcLines[posData.line],
       html: htmlLines[posData.line],
       errorCharStart: posData.character,
-      errorLength: Math.max(tsDiagnostic.length, 1)
+      errorLength: Math.max(tsDiagnostic.length, 1),
     };
 
     if (errorLine.html && errorLine.html.indexOf('class="hljs') === -1) {
@@ -66,7 +74,12 @@ function loadDiagnostic(context: BuildContext, tsDiagnostic: ts.Diagnostic) {
       errorLine.errorCharStart--;
     }
 
-    d.header =  Logger.formatHeader('typescript', tsDiagnostic.file.fileName, context.rootDir, errorLine.lineNumber);
+    d.header = Logger.formatHeader(
+      "typescript",
+      tsDiagnostic.file.fileName,
+      context.rootDir,
+      errorLine.lineNumber
+    );
 
     if (errorLine.lineIndex > 0) {
       const previousLine: PrintLine = {
@@ -75,12 +88,19 @@ function loadDiagnostic(context: BuildContext, tsDiagnostic: ts.Diagnostic) {
         text: srcLines[errorLine.lineIndex - 1],
         html: htmlLines[errorLine.lineIndex - 1],
         errorCharStart: -1,
-        errorLength: -1
+        errorLength: -1,
       };
 
-      if (previousLine.html && previousLine.html.indexOf('class="hljs') === -1) {
+      if (
+        previousLine.html &&
+        previousLine.html.indexOf('class="hljs') === -1
+      ) {
         try {
-          previousLine.html = highlight(d.language, previousLine.text, true).value;
+          previousLine.html = highlight(
+            d.language,
+            previousLine.text,
+            true
+          ).value;
         } catch (e) {}
       }
 
@@ -94,7 +114,7 @@ function loadDiagnostic(context: BuildContext, tsDiagnostic: ts.Diagnostic) {
         text: srcLines[errorLine.lineIndex + 1],
         html: htmlLines[errorLine.lineIndex + 1],
         errorCharStart: -1,
-        errorLength: -1
+        errorLength: -1,
       };
 
       if (nextLine.html && nextLine.html.indexOf('class="hljs') === -1) {
@@ -109,4 +129,3 @@ function loadDiagnostic(context: BuildContext, tsDiagnostic: ts.Diagnostic) {
 
   return d;
 }
-

@@ -16,10 +16,10 @@ describe('Preprocess Task', () => {
       const mockGlobResults = [];
       mockGlobResults.push({ absolutePath: mockDirName});
       mockGlobResults.push({ absolutePath: mockDirName + '2'});
-      spyOn(deeplink, deeplink.deepLinking.name).and.returnValue(Promise.resolve());
-      spyOn(helpers, helpers.getBooleanPropertyValue.name).and.returnValue(false);
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(mockDirName);
-      spyOn(globUtil, globUtil.globAll.name).and.returnValue(Promise.resolve(mockGlobResults));
+      spyOn(deeplink, 'deepLinking').and.returnValue(Promise.resolve());
+      spyOn(helpers, 'getBooleanPropertyValue').and.returnValue(false);
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(mockDirName);
+      spyOn(globUtil, 'globAll').and.returnValue(Promise.resolve(mockGlobResults));
 
       // act
       return preprocess.preprocess(context);

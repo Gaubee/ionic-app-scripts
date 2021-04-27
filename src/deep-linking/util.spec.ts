@@ -43,7 +43,7 @@ describe('util', () => {
       fileCache.set(pageThreeModule, { path: pageThreeModule, content: knownFileContent});
       fileCache.set(someOtherFile, { path: someOtherFile, content: knownFileContent});
 
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.callFake((input: string) => {
+      spyOn(helpers, 'getStringPropertyValue').and.callFake((input: string) => {
         if (input === Constants.ENV_VAR_DEEPLINKS_DIR) {
           return pagesDir;
         }
@@ -551,7 +551,7 @@ export function removeDecorators(fileName: string, source: string): string {
       const pagePath = join(basePath, 'my-page', 'my-page.ts');
       const ngModulePath = join(basePath, 'my-page', 'my-page.module.ts');
 
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue('.module.ts');
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue('.module.ts');
 
       const result = util.getNgModulePathFromCorrespondingPage(pagePath);
       expect(result).toEqual(ngModulePath);
@@ -575,7 +575,7 @@ export function removeDecorators(fileName: string, source: string): string {
       const pagePath = join(prefix, 'pages', 'page-one', 'page-one.ts');
       const knownClassName = 'PageOne';
       const fileCache = new FileCache();
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue('.module.ts');
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue('.module.ts');
 
       const knownErrorMsg = 'Should never happen';
       try {
@@ -610,7 +610,7 @@ export class HomePageModule {}
       const knownClassName = 'PageOne';
       const fileCache = new FileCache();
       fileCache.set(pageNgModulePath, { path: pageNgModulePath, content: pageNgModuleContent});
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue('.module.ts');
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue('.module.ts');
 
       const result = util.getNgModuleDataFromPage(appNgModulePath, pagePath, knownClassName, fileCache, false);
 
@@ -643,7 +643,7 @@ export class HomePageModule {}
       const knownClassName = 'PageOne';
       const fileCache = new FileCache();
       fileCache.set(pageNgModulePath, { path: pageNgModulePath, content: pageNgModuleContent});
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue('.module.ts');
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue('.module.ts');
 
       const result = util.getNgModuleDataFromPage(appNgModulePath, pagePath, knownClassName, fileCache, true);
       expect(result.absolutePath).toEqual(helpers.changeExtension(pageNgModulePath, '.ngfactory.js'));
@@ -830,7 +830,7 @@ export class PageThreeModule {
       fileCache.set(pageSettingsPath, { path: pageSettingsPath, content: pageSettingsContent});
       fileCache.set(pageSettingsNgModulePath, { path: pageSettingsNgModulePath, content: pageSettingsNgModuleContent});
 
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue('.module.ts');
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue('.module.ts');
 
       const map = util.getDeepLinkData(appNgModulePath, fileCache, false);
       expect(map.size).toEqual(0);
@@ -1015,7 +1015,7 @@ export class PageThreeModule {
       fileCache.set(pageSettingsPath, { path: pageSettingsPath, content: pageSettingsContent});
       fileCache.set(pageSettingsNgModulePath, { path: pageSettingsNgModulePath, content: pageSettingsNgModuleContent});
 
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.callFake((input: string) => {
+      spyOn(helpers, 'getStringPropertyValue').and.callFake((input: string) => {
         if (input === Constants.ENV_VAR_DEEPLINKS_DIR) {
           return srcDir;
         } else {
@@ -1208,7 +1208,7 @@ export class PageThreeModule {
       fileCache.set(pageSettingsPath, { path: pageSettingsPath, content: pageSettingsContent});
       fileCache.set(pageSettingsNgModulePath, { path: pageSettingsNgModulePath, content: pageSettingsNgModuleContent});
 
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.callFake((input: string) => {
+      spyOn(helpers, 'getStringPropertyValue').and.callFake((input: string) => {
         if (input === Constants.ENV_VAR_DEEPLINKS_DIR) {
           return srcDir;
         } else {
@@ -1429,7 +1429,7 @@ export class PageThreeModule {
       fileCache.set(pageSettingsPath, { path: pageSettingsPath, content: pageSettingsContent});
       fileCache.set(pageSettingsNgModulePath, { path: pageSettingsNgModulePath, content: pageSettingsNgModuleContent});
 
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.callFake((input: string) => {
+      spyOn(helpers, 'getStringPropertyValue').and.callFake((input: string) => {
         if (input === Constants.ENV_VAR_DEEPLINKS_DIR) {
           return srcDir;
         } else {
@@ -1988,7 +1988,7 @@ export class PageOneModule {}
 }
 `;
       const knownAppNgModulePath = join(process.cwd(), 'myApp', 'src', 'app.module.ts');
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(knownAppNgModulePath);
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(knownAppNgModulePath);
       spyOn(fileCache, 'get').and.callThrough();
 
       const knownErrorMsg = 'should never get here';
@@ -2042,7 +2042,7 @@ export class AppModule {}
 
       const knownAppNgModulePath = join(process.cwd(), 'myApp', 'src', 'app.module.ts');
       fileCache.set(knownAppNgModulePath, { path: knownAppNgModulePath, content: ngModuleContent});
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(knownAppNgModulePath);
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(knownAppNgModulePath);
 
       const changedFiles: ChangedFile[] = [];
       util.updateAppNgModuleWithDeepLinkConfig(knownContext, knownDeepLinkString, changedFiles);

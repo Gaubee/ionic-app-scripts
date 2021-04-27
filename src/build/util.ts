@@ -29,7 +29,7 @@ export function scanSrcTsFiles(context: BuildContext) {
 
 
 export function validateTsConfigSettings(tsConfigFileContents: TsConfig) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     try {
       const isValid = tsConfigFileContents.options &&
         tsConfigFileContents.options.sourceMap === true;

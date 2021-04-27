@@ -9,7 +9,7 @@ describe('bundle task', () => {
 
     it('should return the value webpack task returns', () => {
       // arrange
-      spyOn(webpack, webpack.webpack.name).and.returnValue(Promise.resolve());
+      spyOn(webpack, 'webpack').and.returnValue(Promise.resolve());
       const context = { bundler: Constants.BUNDLER_WEBPACK};
 
       // act
@@ -22,7 +22,7 @@ describe('bundle task', () => {
     it('should throw when webpack throws', () => {
       const errorText = 'simulating an error';
       // arrange
-      spyOn(webpack, webpack.webpack.name).and.returnValue(Promise.reject(new Error(errorText)));
+      spyOn(webpack, 'webpack').and.returnValue(Promise.reject(new Error(errorText)));
       const context = { bundler: Constants.BUNDLER_WEBPACK};
 
       // act
@@ -40,7 +40,7 @@ describe('bundle task', () => {
 
     it('should return the value webpack returns', () => {
       // arrange
-      spyOn(webpack, webpack.webpackUpdate.name).and.returnValue(Promise.resolve());
+      spyOn(webpack, 'webpackUpdate').and.returnValue(Promise.resolve());
       const context = { bundler: Constants.BUNDLER_WEBPACK};
       const changedFiles: ChangedFile[] = [];
 
@@ -55,7 +55,7 @@ describe('bundle task', () => {
       const errorText = 'simulating an error';
       try {
         // arrange
-        spyOn(webpack, webpack.webpackUpdate.name).and.returnValue(Promise.reject(new Error(errorText)));
+        spyOn(webpack, 'webpackUpdate').and.returnValue(Promise.reject(new Error(errorText)));
         const context = { bundler: Constants.BUNDLER_WEBPACK};
         const changedFiles: ChangedFile[] = [];
 
@@ -79,7 +79,7 @@ describe('bundle task', () => {
     it('should get false when devtool is null for webpack', () => {
       // arrange
       const config = { };
-      spyOn(webpack, webpack.getWebpackConfig.name).and.returnValue(config);
+      spyOn(webpack, 'getWebpackConfig').and.returnValue(config);
       const context = { bundler: Constants.BUNDLER_WEBPACK};
       // act
       const result = bundle.buildJsSourceMaps(context);
@@ -92,7 +92,7 @@ describe('bundle task', () => {
     it('should get false when devtool is valid', () => {
       // arrange
       const config = { devtool: 'someValue'};
-      spyOn(webpack, webpack.getWebpackConfig.name).and.returnValue(config);
+      spyOn(webpack, 'getWebpackConfig').and.returnValue(config);
       const context = { bundler: Constants.BUNDLER_WEBPACK};
       // act
       const result = bundle.buildJsSourceMaps(context);
@@ -108,7 +108,7 @@ describe('bundle task', () => {
     it('should get the value from webpack', () => {
       // arrange
       const returnValue = 'someString';
-      spyOn(webpack, webpack.getOutputDest.name).and.returnValue(returnValue);
+      spyOn(webpack, 'getOutputDest').and.returnValue(returnValue);
       const context = { bundler: Constants.BUNDLER_WEBPACK};
       // act
       const result = bundle.getJsOutputDest(context);

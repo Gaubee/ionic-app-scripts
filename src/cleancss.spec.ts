@@ -14,7 +14,7 @@ describe('clean css task', () => {
       // arrange
       const context = { };
       const configFile: any = null;
-      const spy = spyOn(workerClient, workerClient.runWorker.name).and.returnValue(Promise.resolve());
+      const spy = spyOn(workerClient, 'runWorker').and.returnValue(Promise.resolve());
       // act
       return (cleanCss as any).cleancss(context, null).then(() => {
         // assert
@@ -26,7 +26,7 @@ describe('clean css task', () => {
       // arrange
       const context = { };
       const errorMessage = 'Simulating an error';
-      spyOn(workerClient, workerClient.runWorker.name).and.returnValue(Promise.reject(new Error(errorMessage)));
+      spyOn(workerClient, 'runWorker').and.returnValue(Promise.reject(new Error(errorMessage)));
 
       // act
       return (cleanCss as any).cleancss(context, null).then(() => {
@@ -44,9 +44,9 @@ describe('clean css task', () => {
       // arrange
       const context = { buildDir: 'www'};
       const cleanCssConfig = { sourceFileName: 'sourceFileName', destFileName: 'destFileName'};
-      spyOn(config, config.generateContext.name).and.returnValue(context);
-      spyOn(config, config.fillConfigDefaults.name).and.returnValue(cleanCssConfig);
-      spyOn(helpers, helpers.readFileAsync.name).and.returnValue(Promise.reject(new Error(errorMessage)));
+      spyOn(config, 'generateContext').and.returnValue(context);
+      spyOn(config, 'fillConfigDefaults').and.returnValue(cleanCssConfig);
+      spyOn(helpers, 'readFileAsync').and.returnValue(Promise.reject(new Error(errorMessage)));
 
       // act
       return (cleanCss as any).cleancssWorker(context, null).then(() => {
@@ -62,11 +62,11 @@ describe('clean css task', () => {
       const cleanCssConfig = { sourceFileName: 'sourceFileName', destFileName: 'destFileName'};
       const fileContent = 'content';
       const minifiedContent = 'someContent';
-      spyOn(config, config.generateContext.name).and.returnValue(context);
-      spyOn(config, config.fillConfigDefaults.name).and.returnValue(cleanCssConfig);
-      spyOn(helpers, helpers.readFileAsync.name).and.returnValue(Promise.resolve(fileContent));
-      spyOn(helpers, helpers.writeFileAsync.name).and.returnValue(Promise.resolve());
-      spyOn(cleanCssFactory, cleanCssFactory.getCleanCssInstance.name).and.returnValue({
+      spyOn(config, 'generateContext').and.returnValue(context);
+      spyOn(config, 'fillConfigDefaults').and.returnValue(cleanCssConfig);
+      spyOn(helpers, 'readFileAsync').and.returnValue(Promise.resolve(fileContent));
+      spyOn(helpers, 'writeFileAsync').and.returnValue(Promise.resolve());
+      spyOn(cleanCssFactory, 'getCleanCssInstance').and.returnValue({
         minify: (content: string, cb: Function) => {
           cb(null, { styles: minifiedContent });
         }
@@ -93,8 +93,8 @@ describe('clean css task', () => {
       const mockMinifier = {
         minify: () => {}
       };
-      const minifySpy = spyOn(mockMinifier, mockMinifier.minify.name);
-      spyOn(cleanCssFactory, cleanCssFactory.getCleanCssInstance.name).and.returnValue(mockMinifier);
+      const minifySpy = spyOn(mockMinifier, 'minify');
+      spyOn(cleanCssFactory, 'getCleanCssInstance').and.returnValue(mockMinifier);
 
       // act
       const promise = (cleanCss as any).runCleanCss(configFile, fileContent, destinationFilePath);
@@ -121,8 +121,8 @@ describe('clean css task', () => {
       const mockMinifier = {
         minify: () => {}
       };
-      const minifySpy = spyOn(mockMinifier, mockMinifier.minify.name);
-      spyOn(cleanCssFactory, cleanCssFactory.getCleanCssInstance.name).and.returnValue(mockMinifier);
+      const minifySpy = spyOn(mockMinifier, 'minify');
+      spyOn(cleanCssFactory, 'getCleanCssInstance').and.returnValue(mockMinifier);
 
       // act
       const promise = (cleanCss as any).runCleanCss(configFile, fileContent, destinationFilePath);
@@ -149,8 +149,8 @@ describe('clean css task', () => {
       const mockMinifier = {
         minify: () => {}
       };
-      minifySpy = spyOn(mockMinifier, mockMinifier.minify.name);
-      spyOn(cleanCssFactory, cleanCssFactory.getCleanCssInstance.name).and.returnValue(mockMinifier);
+      minifySpy = spyOn(mockMinifier, 'minify');
+      spyOn(cleanCssFactory, 'getCleanCssInstance').and.returnValue(mockMinifier);
 
       // act
       const promise = (cleanCss as any).runCleanCss(configFile, fileContent, destinationFilePath);

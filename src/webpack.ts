@@ -123,7 +123,7 @@ export function setBundledFiles(context: BuildContext) {
 }
 
 export function runWebpackFullBuild(config: WebpackConfig) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const callback = (err: Error, stats: any) => {
       if (err) {
         reject(new BuildError(err));
@@ -146,7 +146,7 @@ export function runWebpackFullBuild(config: WebpackConfig) {
 }
 
 function runWebpackIncrementalBuild(initializeWatch: boolean, context: BuildContext, config: WebpackConfig) {
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise<void>((resolve, reject) => {
     // start listening for events, remove listeners once an event is received
     eventEmitter.on(INCREMENTAL_BUILD_FAILED, (err: Error) => {
       Logger.debug('Webpack Bundle Update Failed');

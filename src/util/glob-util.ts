@@ -1,53 +1,64 @@
-import { dirname, isAbsolute, join, normalize, resolve as pathResolve, sep } from 'path';
-import * as globFunction from 'glob';
-import { toUnixPath } from './helpers';
-
+import {
+  dirname,
+  isAbsolute,
+  join,
+  normalize,
+  resolve as pathResolve,
+  sep,
+} from "path";
+import * as globFunction from "glob";
+import { toUnixPath } from "./helpers";
 
 function isNegative(pattern: string) {
-  return pattern[0] === '!';
+  return pattern[0] === "!";
 }
 
 function isString(pattern: string) {
-  return typeof pattern === 'string';
+  return typeof pattern === "string";
 }
 
 function assertPatternsInput(patterns: string[]) {
   if (!patterns.every(isString)) {
-    throw new Error('Each glob entry must be a string');
+    throw new Error("Each glob entry must be a string");
   }
 }
 
 export function generateGlobTasks(patterns: string[], opts: any) {
-
   patterns = [].concat(patterns);
   assertPatternsInput(patterns);
 
   const globTasks: GlobObject[] = [];
 
-  opts = Object.assign({
-    cache: Object.create(null),
-    statCache: Object.create(null),
-    realpathCache: Object.create(null),
-    symlinks: Object.create(null),
-    ignore: []
-  }, opts);
+  opts = Object.assign(
+    {
+      cache: Object.create(null),
+      statCache: Object.create(null),
+      realpathCache: Object.create(null),
+      symlinks: Object.create(null),
+      ignore: [],
+    },
+    opts
+  );
 
   patterns.forEach(function (pattern, i) {
     if (isNegative(pattern)) {
       return;
     }
 
-    const ignore = patterns.slice(i).filter(isNegative).map(function (pattern) {
-      return pattern.slice(1);
-    });
+    const ignore = patterns
+      .slice(i)
+      .filter(isNegative)
+      .map(function (pattern) {
+        return pattern.slice(1);
+      });
 
     const task: GlobObject = {
       pattern: pattern,
       opts: Object.assign({}, opts, {
         ignore: opts.ignore.concat(ignore).concat(DEFAULT_IGNORE_ARRAY),
-        nodir: true
+        nodir: true,
       }),
-      base: getBasePath(pattern)
+      base: getBasePath(pattern),
     };
 
     globTasks.push(task);
@@ -62,10 +73,10 @@ function globWrapper(task: GlobObject): Promise<GlobResult[]> {
       if (err) {
         return reject(err);
       }
-      const globResults = files.map(file => {
+      const globResults = files.map((file) => {
         return {
           absolutePath: normalize(pathResolve(file)),
-          base: normalize(pathResolve(getBasePath(task.pattern)))
+          base: normalize(pathResolve(getBasePath(task.pattern))),
         };
       });
       return resolve(globResults);
@@ -81,7 +92,7 @@ export function globAll(globs: string[]): Promise<GlobResult[]> {
     for (const globTask of globTasks) {
       const promise = globWrapper(globTask);
       promises.push(promise);
-      promise.then(globResult => {
+      promise.then((globResult) => {
         resultSet = resultSet.concat(globResult);
       });
     }
@@ -94,7 +105,7 @@ export function globAll(globs: string[]): Promise<GlobResult[]> {
 
 export function getBasePath(pattern: string) {
   var basePath: string;
-  const sepRe = (process.platform === 'win32' ? /[\/\\]/ : /\/+/);
+  const sepRe = process.platform === "win32" ? /[\/\\]/ : /\/+/;
   var parent = globParent(pattern);
 
   basePath = toAbsoluteGlob(parent);
@@ -107,7 +118,7 @@ export function getBasePath(pattern: string) {
 
 function isNegatedGlob(pattern: string) {
   var glob = { negated: false, pattern: pattern, original: pattern };
-  if (pattern.charAt(0) === '!' && pattern.charAt(1) !== '(') {
+  if (pattern.charAt(0) === "!" && pattern.charAt(1) !== "(") {
     glob.negated = true;
     glob.pattern = pattern.slice(1);
   }
@@ -119,13 +130,13 @@ function toAbsoluteGlob(pattern: string) {
   const cwd = toUnixPath(process.cwd());
 
   // trim starting ./ from glob patterns
-  if (pattern.slice(0, 2) === './') {
+  if (pattern.slice(0, 2) === "./") {
     pattern = pattern.slice(2);
   }
 
   // when the glob pattern is only a . use an empty string
-  if (pattern.length === 1 && pattern === '.') {
-    pattern = '';
+  if (pattern.length === 1 && pattern === ".") {
+    pattern = "";
   }
 
   // store last character before glob is modified
@@ -135,41 +146,39 @@ function toAbsoluteGlob(pattern: string) {
   const ing = isNegatedGlob(pattern);
   pattern = ing.pattern;
 
-  if (!isAbsolute(pattern) || pattern.slice(0, 1) === '\\') {
+  if (!isAbsolute(pattern) || pattern.slice(0, 1) === "\\") {
     pattern = join(cwd, pattern);
   }
 
   // if glob had a trailing `/`, re-add it now in case it was removed
-  if (suffix === '/' && pattern.slice(-1) !== '/') {
-    pattern += '/';
+  if (suffix === "/" && pattern.slice(-1) !== "/") {
+    pattern += "/";
   }
 
   // re-add leading `!` if it was removed
-  return ing.negated ? '!' + pattern : pattern;
+  return ing.negated ? "!" + pattern : pattern;
 }
 
 // https://github.com/es128/glob-parent/blob/master/index.js
 function globParent(pattern: string) {
   // special case for strings ending in enclosure containing path separator
-  if (/[\{\[].*[\/]*.*[\}\]]$/.test(pattern)) pattern += '/';
+  if (/[\{\[].*[\/]*.*[\}\]]$/.test(pattern)) pattern += "/";
 
   // preserves full path in case of trailing path separator
-  pattern += 'a';
+  pattern += "a";
 
   // remove path parts that are globby
   do {
     pattern = toUnixPath(dirname(pattern));
-  }
-
-  while (isGlob(pattern) || /(^|[^\\])([\{\[]|\([^\)]+$)/.test(pattern));
+  } while (isGlob(pattern) || /(^|[^\\])([\{\[]|\([^\)]+$)/.test(pattern));
 
   // remove escape chars and return result
-  return pattern.replace(/\\([\*\?\|\[\]\(\)\{\}])/g, '$1');
+  return pattern.replace(/\\([\*\?\|\[\]\(\)\{\}])/g, "$1");
 }
 
 // https://github.com/jonschlinkert/is-glob/blob/master/index.js
 function isGlob(pattern: string) {
-  if (pattern === '') {
+  if (pattern === "") {
     return false;
   }
 
@@ -187,7 +196,7 @@ function isGlob(pattern: string) {
 
 // https://github.com/jonschlinkert/is-extglob/blob/master/index.js
 function isExtglob(pattern: string) {
-  if (pattern === '') {
+  if (pattern === "") {
     return false;
   }
 
@@ -215,4 +224,4 @@ export interface GlobOptions {
   ignore: string[];
 }
 
-export const DEFAULT_IGNORE_ARRAY = ['**/*.DS_Store'];
+export const DEFAULT_IGNORE_ARRAY = ["**/*.DS_Store"];

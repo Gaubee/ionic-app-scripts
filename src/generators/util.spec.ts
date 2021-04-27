@@ -30,7 +30,7 @@ describe('util', () => {
         'ionic-angular',
         'templates'
       );
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(
         templateDir
       );
 
@@ -84,7 +84,7 @@ describe('util', () => {
         'ionic-angular',
         'templates'
       );
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(
         templateDir
       );
 
@@ -139,7 +139,7 @@ describe('util', () => {
         'ionic-angular',
         'templates'
       );
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(
         templateDir
       );
 
@@ -206,7 +206,7 @@ describe('util', () => {
           }
         ]
       };
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(
         templateDir
       );
       // act
@@ -242,7 +242,7 @@ describe('util', () => {
           }
         ]
       };
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(
         templateDir
       );
       // act
@@ -266,7 +266,7 @@ describe('util', () => {
       ];
       const fileContent = 'SomeContent';
       spyOn(fs, 'readdirSync').and.returnValue(knownValues);
-      spyOn(helpers, helpers.readFileAsync.name).and.returnValue(
+      spyOn(helpers, 'readFileAsync').and.returnValue(
         Promise.resolve(fileContent)
       );
 
@@ -545,10 +545,10 @@ $TAB_CONTENT
       map.set(join(templateDir, knownValues[3]), fileContent);
       map.set(join(templateDir, knownValues[4]), fileContent);
 
-      spyOn(helpers, helpers.mkDirpAsync.name).and.returnValue(
+      spyOn(helpers, 'mkDirpAsync').and.returnValue(
         Promise.resolve()
       );
-      spyOn(helpers, helpers.writeFileAsync.name).and.returnValue(
+      spyOn(helpers, 'writeFileAsync').and.returnValue(
         Promise.resolve()
       );
 
@@ -650,14 +650,14 @@ $TAB_CONTENT
     });
 
     it('should return an empty list of glob results', () => {
-      const globAllSpy = spyOn(globUtils, globUtils.globAll.name);
+      const globAllSpy = spyOn(globUtils, 'globAll');
       util.getNgModules(context, []);
       expect(globAllSpy).toHaveBeenCalledWith([]);
     });
 
     it('should return a list of glob results for components', () => {
-      const globAllSpy = spyOn(globUtils, globUtils.globAll.name);
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(
+      const globAllSpy = spyOn(globUtils, 'globAll');
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(
         '.module.ts'
       );
       util.getNgModules(context, ['component']);
@@ -667,8 +667,8 @@ $TAB_CONTENT
     });
 
     it('should return a list of glob results for pages and components', () => {
-      const globAllSpy = spyOn(globUtils, globUtils.globAll.name);
-      spyOn(helpers, helpers.getStringPropertyValue.name).and.returnValue(
+      const globAllSpy = spyOn(globUtils, 'globAll');
+      spyOn(helpers, 'getStringPropertyValue').and.returnValue(
         '.module.ts'
       );
       util.getNgModules(context, ['page', 'component']);

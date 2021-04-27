@@ -110,7 +110,7 @@ function buildProject(context: BuildContext) {
 }
 
 export function buildUpdate(changedFiles: ChangedFile[], context: BuildContext) {
-  return new Promise(resolve => {
+  return new Promise<void>(resolve => {
     const logger = new Logger('build');
 
     buildId++;
