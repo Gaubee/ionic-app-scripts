@@ -1,3 +1,7 @@
+<a name="4.0.1"></a>
+## [4.0.1](https://github.com/Gaubee/ionic-app-scripts/compare/v4.0.0...v4.0.1) (2021-04-27)
+
+
 <a name="4.0.0"></a>
 # [4.0.0](https://github.com/ionic-team/ionic-app-scripts/compare/v3.2.4...v4.0.0) (2021-04-27)
 
