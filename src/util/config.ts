@@ -431,7 +431,7 @@ export function bundlerStrategy(context: BuildContext): string {
 }
 
 
-function isValidBundler(bundler: any) {
+function isValidBundler(bundler: unknown) {
   return bundler === Constants.BUNDLER_WEBPACK;
 }
 

@@ -19,7 +19,7 @@ export function cleancss(context: BuildContext, configFile?: string) {
 }
 
 
-export function cleancssWorker(context: BuildContext, configFile: string): Promise<any> {
+export function cleancssWorker(context: BuildContext, configFile: string) {
   context = generateContext(context);
   const config: CleanCssConfig = fillConfigDefaults(configFile, taskInfo.defaultConfigFile) as typeof import('./config/cleancss.config');
   const srcFile = join(context.buildDir, config.sourceFileName);
