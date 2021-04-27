@@ -1,33 +1,40 @@
-var path = require('path');
-var execSync = require('child_process').execSync;
+//@ts-check
+const path = require("path");
+const execSync = require("child_process").execSync;
 
-var GithubApi = require('github');
+const { Octokit } = require("@octokit/rest");
 
-var changelogCommand = './node_modules/.bin/conventional-changelog -p angular';
+const changelogCommand = "conventional-changelog -p angular";
 
-var packageJsonPath = path.join(__dirname, '..', 'package.json');
-var packageJson = require(packageJsonPath);
+const packageJsonPath = path.join(__dirname, "..", "package.json");
+const packageJson = require(packageJsonPath);
 
-var github = new GithubApi({ version: '3.0.0'});
+const github = new Octokit({
+  version: "3.0.0",
+  auth: require("./github-token.json").auth,
+});
 
-github.authenticate({ type: 'oauth', token: process.env.GH_TOKEN });
+const env = { ...process.env };
+env.PATH += ";" + path.join(__dirname, "../node_modules/.bin/");
 
-var changelogContent = execSync(changelogCommand).toString();
+const changelogContent = execSync(changelogCommand, {
+  env,
+}).toString();
 
-github.releases.createRelease({
-  owner: 'ionic-team',
-  repo: 'ionic-app-scripts',
-  target_commitish: 'master',
-  tag_name: 'v' + packageJson.version,
-  name: packageJson.version,
-  body: changelogContent,
-  prerelease: false
-}, function(err, result) {
+(async () => {
+  const result = await github.rest.repos.createRelease({
+    owner: "gaubee",
+    repo: "ionic-app-scripts",
+    target_commitish: "bnqkl",
+    tag_name: "v" + packageJson.version,
+    name: packageJson.version,
+    body: changelogContent,
+    prerelease: false,
+  });
+  console.log("[create-github-release]: Process succeeded");
+})().catch((err) => {
   if (err) {
-    console.log('[create-github-release] An error occurred: ' + err.message);
+    console.log("[create-github-release] An error occurred: " + err.message);
     process.exit(1);
-  }
-  else {
-    console.log('[create-github-release]: Process succeeded');
   }
 });

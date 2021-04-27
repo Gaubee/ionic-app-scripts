@@ -1,3 +1,8 @@
+<a name="4.0.0"></a>
+# [4.0.0](https://github.com/ionic-team/ionic-app-scripts/compare/v3.2.4...v4.0.0) (2021-04-27)
+
+
+
 <a name="3.2.4"></a>
 ## [3.2.4](https://github.com/ionic-team/ionic-app-scripts/compare/v3.2.3...v3.2.4) (2019-05-24)
 
